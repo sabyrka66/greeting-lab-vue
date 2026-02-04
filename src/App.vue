@@ -13,10 +13,20 @@ const tone = ref<ToneType>(ToneType.FRIENDLY)
 const language = ref<LanguageType>('Русский')
 const generatedText = ref<string>('')
 
+const loading = ref<boolean>(false)
+const error = ref<string | null>(null)
+
 const tones = computed(() => Object.values(ToneType))
 
 const handleGenerate = async (): Promise<void> => {
-  if (!name.value.trim()) return
+  if (!name.value.trim()) {
+    error.value = 'Пожалуйста, введи имя адресата.'
+    return
+  }
+
+  error.value = null
+  loading.value = true
+  generatedText.value = ''
 
   try {
     const result = await generateGreeting(
@@ -48,6 +58,7 @@ const handleGenerate = async (): Promise<void> => {
       <p>{{ tone }}</p>
       <p>{{ language }}</p>
       <p>{{ generatedText }}</p>
+      <p>{{ error }}</p>
     </div>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -81,7 +92,9 @@ const handleGenerate = async (): Promise<void> => {
           </select>
         </div>
 
-        <button @click="handleGenerate">СОЗДАТЬ МАГИЮ</button>
+        <button @click="handleGenerate" :disabled="loading">
+          СОЗДАТЬ МАГИЮ
+        </button>
       </div>
     </main>
   </div>
