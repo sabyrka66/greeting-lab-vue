@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { OccasionType } from './types'
+import { computed, ref } from 'vue'
+import { OccasionType, ToneType, type LanguageType } from './types'
+import { LANGUAGES } from './constants'
 
 const occasion = ref<OccasionType>(OccasionType.BIRTHDAY)
+const name = ref('')
+const age = ref('')
+const interests = ref('')
 
-const name = ref<string>('')
-const age = ref<string>('')
+const tone = ref<ToneType>(ToneType.FRIENDLY)
+const language = ref<LanguageType>('Русский')
 
-const interests = ref<string>('')
+const tones = computed(() => Object.values(ToneType))
 </script>
 
 <template>
@@ -16,11 +20,11 @@ const interests = ref<string>('')
 
     <div>
       <p>{{ occasion }}</p>
-
       <p>{{ name }}</p>
       <p>{{ age }}</p>
-
       <p>{{ interests }}</p>
+      <p>{{ tone }}</p>
+      <p>{{ language }}</p>
     </div>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -31,17 +35,27 @@ const interests = ref<string>('')
         </div>
 
         <div>
-          <input type="text" placeholder="Сабыржан" v-model="name" />
-          <br />
-
-          <input type="number" placeholder="18" v-model="age" />
-          <br />
-
+          <input type="text" placeholder="Сабыржан" v-model="name" /> <br />
+          <input type="number" placeholder="18" v-model="age" /> <br />
           <textarea
             rows="2"
             placeholder="Путешествие, кодинг, плаванье..."
             v-model="interests"
           ></textarea>
+        </div>
+
+        <div>
+          <button v-for="t in tones" :key="t" @click="tone = t">
+            {{ t }}
+          </button>
+        </div>
+
+        <div>
+          <select v-model="language">
+            <option v-for="lang in LANGUAGES" :key="lang" :value="lang">
+              {{ lang }}
+            </option>
+          </select>
         </div>
       </div>
     </main>
