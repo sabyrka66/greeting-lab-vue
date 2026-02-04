@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { OccasionType, ToneType, type LanguageType } from './types'
 import { LANGUAGES } from './constants'
 import { generateGreeting } from './service/geminiService'
+import AppHeader from './components/AppHeader.vue'
 
 const occasion = ref<OccasionType>(OccasionType.BIRTHDAY)
 const name = ref('')
@@ -48,7 +49,7 @@ const handleGenerate = async (): Promise<void> => {
 
 <template>
   <div class="min-h-screen bg-[#faf5ff]">
-    <header>Генератор поздравлений</header>
+    <AppHeader />
 
     <div>
       <p>{{ occasion }}</p>
@@ -92,9 +93,7 @@ const handleGenerate = async (): Promise<void> => {
           </select>
         </div>
 
-        <button @click="handleGenerate" :disabled="loading">
-          СОЗДАТЬ МАГИЮ
-        </button>
+        <button @click="handleGenerate" :disabled="loading">СОЗДАТЬ МАГИЮ</button>
       </div>
     </main>
   </div>
