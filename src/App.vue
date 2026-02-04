@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { OccasionType, ToneType, type LanguageType } from './types'
 import { LANGUAGES } from './constants'
+import { generateGreeting } from './service/geminiService'
 
 const occasion = ref<OccasionType>(OccasionType.BIRTHDAY)
 const name = ref('')
@@ -10,8 +11,29 @@ const interests = ref('')
 
 const tone = ref<ToneType>(ToneType.FRIENDLY)
 const language = ref<LanguageType>('Русский')
+const generatedText = ref<string>('')
 
 const tones = computed(() => Object.values(ToneType))
+
+const handleGenerate = async (): Promise<void> => {
+  if (!name.value.trim()) return
+
+  try {
+    const result = await generateGreeting(
+      occasion.value,
+      name.value,
+      age.value,
+      interests.value,
+      tone.value,
+      language.value,
+    )
+    generatedText.value = result
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error)
+    }
+  }
+}
 </script>
 
 <template>
@@ -25,6 +47,7 @@ const tones = computed(() => Object.values(ToneType))
       <p>{{ interests }}</p>
       <p>{{ tone }}</p>
       <p>{{ language }}</p>
+      <p>{{ generatedText }}</p>
     </div>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -57,6 +80,8 @@ const tones = computed(() => Object.values(ToneType))
             </option>
           </select>
         </div>
+
+        <button @click="handleGenerate">СОЗДАТЬ МАГИЮ</button>
       </div>
     </main>
   </div>
